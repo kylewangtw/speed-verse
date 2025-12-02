@@ -1,6 +1,7 @@
-const CACHE_NAME = 'speedverse-v3';
-const BASE_PATH = self.location.pathname.replace('/sw.js', '');
-const ASSETS = [
+const CACHE_NAME = 'speedverse-v4';
+const BASE_PATH = self.location.pathname.replace(/sw\.js$/, '');
+const BASE_URL = `${self.location.origin}${BASE_PATH}`;
+const ASSET_PATHS = [
   './',
   './index.html',
   './style.css',
@@ -10,12 +11,14 @@ const ASSETS = [
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
+const PRECACHE_URLS = ASSET_PATHS.map((path) => new URL(path, BASE_URL).href);
+const OFFLINE_URL = new URL('./index.html', BASE_URL).href;
 
 // Install - cache assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS))
+      .then((cache) => cache.addAll(PRECACHE_URLS))
       .then(() => self.skipWaiting())
   );
 });
@@ -23,51 +26,59 @@ self.addEventListener('install', (event) => {
 // Activate - clean old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME)
+    caches.keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== CACHE_NAME)
             .map((key) => caches.delete(key))
-      );
-    }).then(() => self.clients.claim())
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
-// Fetch - cache first, then network
+// Network-first for navigation, cache-first for same-origin assets
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') {
+    return;
+  }
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match(OFFLINE_URL))
+    );
+    return;
+  }
+
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin) {
     return;
   }
 
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
-        // Return cached version or fetch from network
-        if (response) {
-          return response;
+      .then((cached) => {
+        if (cached) {
+          return cached;
         }
-        
-        return fetch(event.request).then((fetchResponse) => {
-          // Only cache successful responses
-          if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
-            return fetchResponse;
-          }
-          
-          // Clone and cache the response
-          const responseToCache = fetchResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
+
+        return fetch(event.request)
+          .then((networkResponse) => {
+            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+              return networkResponse;
+            }
+
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+            return networkResponse;
+          })
+          .catch(() => {
+            const acceptsHtml = event.request.headers.get('accept')?.includes('text/html');
+            if (acceptsHtml) {
+              return caches.match(OFFLINE_URL);
+            }
           });
-          
-          return fetchResponse;
-        });
-      })
-      .catch(() => {
-        // Offline fallback for HTML pages
-        const acceptHeader = event.request.headers.get('accept');
-        if (acceptHeader && acceptHeader.includes('text/html')) {
-          return caches.match('./index.html');
-        }
       })
   );
 });
