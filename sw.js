@@ -1,12 +1,12 @@
 const CACHE_NAME = 'speedverse-v1';
+const BASE_PATH = self.location.pathname.replace('/sw.js', '');
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/app.js',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  './',
+  './index.html',
+  './style.css',
+  './app.js',
+  './manifest.json',
+  './icons/icon.svg'
 ];
 
 // Install - cache assets
@@ -32,27 +32,39 @@ self.addEventListener('activate', (event) => {
 
 // Fetch - cache first, then network
 self.addEventListener('fetch', (event) => {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
         // Return cached version or fetch from network
-        return response || fetch(event.request).then((fetchResponse) => {
-          // Don't cache non-GET requests
-          if (event.request.method !== 'GET') {
+        if (response) {
+          return response;
+        }
+        
+        return fetch(event.request).then((fetchResponse) => {
+          // Only cache successful responses
+          if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
             return fetchResponse;
           }
           
           // Clone and cache the response
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, fetchResponse.clone());
-            return fetchResponse;
+          const responseToCache = fetchResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
           });
+          
+          return fetchResponse;
         });
       })
       .catch(() => {
         // Offline fallback for HTML pages
-        if (event.request.headers.get('accept').includes('text/html')) {
-          return caches.match('/index.html');
+        const acceptHeader = event.request.headers.get('accept');
+        if (acceptHeader && acceptHeader.includes('text/html')) {
+          return caches.match('./index.html');
         }
       })
   );
