@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Pace Converter - Easily convert running speed and pace">
+  <meta name="theme-color" content="#1a1a2e">
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Speed Verse">
+  
+  <title>Speed Verse - Pace Converter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1 class="logo">Speed<span>Verse</span></h1>
+      <p class="tagline">Pace Converter</p>
+    </header>
+
+    <main class="main">
+      <!-- Pace Input -->
+      <div class="input-group">
+        <label class="input-label">Pace</label>
+        <div class="input-wrapper pace-wrapper">
+          <input 
+            type="number" 
+            id="pace-min" 
+            class="input-field pace-field" 
+            placeholder="6"
+            min="0"
+            max="59"
+            inputmode="numeric"
+          >
+          <span class="pace-separator">:</span>
+          <input 
+            type="number" 
+            id="pace-sec" 
+            class="input-field pace-field" 
+            placeholder="00"
+            min="0"
+            max="59"
+            inputmode="numeric"
+          >
+          <button class="unit-select-btn" id="pace-unit-btn" data-type="pace">
+            <span id="pace-unit">min/km</span>
+            <svg class="unit-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 4.5L6 7.5L9 4.5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Divider with Convert -->
+      <div class="convert-section">
+        <div class="divider"></div>
+        <div class="action-buttons">
+          <button class="convert-btn" id="convert-btn">
+            <svg class="convert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/>
+            </svg>
+            Convert
+          </button>
+          <button class="clear-btn" id="clear-btn">
+            <svg class="clear-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+            Clear
+          </button>
+        </div>
+        <div class="divider"></div>
+      </div>
+
+      <!-- Speed Input -->
+      <div class="input-group">
+        <label class="input-label">Speed</label>
+        <div class="input-wrapper">
+          <input 
+            type="number" 
+            id="speed-input" 
+            class="input-field" 
+            placeholder="10.0"
+            step="0.1"
+            min="0"
+            max="50"
+            inputmode="decimal"
+          >
+          <button class="unit-select-btn" id="speed-unit-btn" data-type="speed">
+            <span id="speed-unit">km/h</span>
+            <svg class="unit-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 4.5L6 7.5L9 4.5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Result Display -->
+      <div class="result-display" id="result-display">
+        <p class="result-text">Enter speed or pace and click convert</p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>Speed Verse &copy; 2025</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

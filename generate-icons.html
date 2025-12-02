@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate PWA Icons</title>
+  <style>
+    body { font-family: system-ui; padding: 2rem; background: #1a1a2e; color: white; }
+    canvas { border: 1px solid #333; margin: 1rem 0; display: block; }
+    button { padding: 1rem 2rem; font-size: 1rem; cursor: pointer; margin: 0.5rem; }
+    .container { max-width: 600px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Speed Verse - PWA Icon Generator</h1>
+    <p>Click buttons below to download icons, then place them in the <code>icons/</code> folder.</p>
+    
+    <canvas id="canvas192" width="192" height="192"></canvas>
+    <button onclick="download(192)">Download icon-192.png</button>
+    
+    <canvas id="canvas512" width="512" height="512"></canvas>
+    <button onclick="download(512)">Download icon-512.png</button>
+  </div>
+
+  <script>
+    function drawIcon(size) {
+      const canvas = document.getElementById(`canvas${size}`);
+      const ctx = canvas.getContext('2d');
+      
+      // Background
+      ctx.fillStyle = '#1a1a2e';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, size, size, size * 0.15);
+      ctx.fill();
+      
+      // Circle
+      ctx.fillStyle = '#0f0f1a';
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = size * 0.025;
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      
+      // Text
+      ctx.fillStyle = '#00d4ff';
+      ctx.font = `800 ${size * 0.3}px system-ui, -apple-system, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('SV', size/2, size/2 + size * 0.02);
+    }
+    
+    function download(size) {
+      const canvas = document.getElementById(`canvas${size}`);
+      const link = document.createElement('a');
+      link.download = `icon-${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+    
+    // Draw both icons on load
+    drawIcon(192);
+    drawIcon(512);
+  </script>
+</body>
+</html>
+
