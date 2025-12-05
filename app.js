@@ -325,16 +325,34 @@ function loadFromStorage() {
 }
 
 // === Service Worker Registration ===
+// Register immediately when DOM is ready, not waiting for all resources
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
-      .then(reg => {
-        console.log('SW registered:', reg.scope);
-      })
-      .catch(err => {
-        console.log('SW registration failed:', err);
+  // Use DOMContentLoaded for earlier registration, or register immediately
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', registerSW);
+  } else {
+    // DOM already loaded, register immediately
+    registerSW();
+  }
+}
+
+function registerSW() {
+  navigator.serviceWorker.register('./sw.js', { scope: './' })
+    .then(reg => {
+      console.log('SW registered:', reg.scope);
+      // Check for updates
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            console.log('New SW available');
+          }
+        });
       });
-  });
+    })
+    .catch(err => {
+      console.error('SW registration failed:', err);
+    });
 }
 
 // === Start App ===

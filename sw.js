@@ -7,9 +7,8 @@ const ASSET_PATHS = [
   './style.css',
   './app.js',
   './manifest.json',
-  './icons/icon.svg',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/speedverse_icon_192.png',
+  './icons/speedverse_icon_512.png'
 ];
 const PRECACHE_URLS = ASSET_PATHS.map((path) => new URL(path, BASE_URL).href);
 const OFFLINE_URL = new URL('./index.html', BASE_URL).href;
