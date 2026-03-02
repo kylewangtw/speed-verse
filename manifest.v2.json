@@ -1,10 +1,10 @@
 {
-  "id": "/manifest.v2.json",
+  "id": "/speed-verse/",
   "name": "Speed Verse - Pace Converter",
   "short_name": "SpeedVerse",
   "description": "Easily convert running speed and pace",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "/speed-verse/",
+  "scope": "/speed-verse/",
   "display": "standalone",
   "background_color": "#0f0f1a",
   "theme_color": "#1a1a2e",
