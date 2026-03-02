@@ -1,4 +1,4 @@
-const CACHE_NAME = 'speedverse-v4';
+const CACHE_NAME = 'speedverse-v5';
 const BASE_PATH = self.location.pathname.replace(/sw\.js$/, '');
 const BASE_URL = `${self.location.origin}${BASE_PATH}`;
 const ASSET_PATHS = [

@@ -1,9 +1,10 @@
 {
+  "id": "/",
   "name": "Speed Verse - Pace Converter",
   "short_name": "SpeedVerse",
   "description": "Easily convert running speed and pace",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0f0f1a",
   "theme_color": "#1a1a2e",
@@ -11,6 +12,7 @@
   "categories": ["utilities", "sports"],
   "lang": "en",
   "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./icons/speedverse_icon_192.png",

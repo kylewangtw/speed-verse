@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Pace Converter - Easily convert running speed and pace">
+  <meta name="description" content="Speed Verse - Convert running pace & speed, calculate race pace from distance and time.">
   <meta name="theme-color" content="#1a1a2e">
-  
+
   <!-- PWA -->
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/png" href="./icons/speedverse_icon_192.png">
@@ -13,8 +13,8 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Speed Verse">
-  
+  <meta name="apple-mobile-web-app-title" content="SpeedVerse">
+
   <title>Speed Verse - Pace Converter</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -22,89 +22,224 @@
   <div class="app">
     <header class="header">
       <h1 class="logo">Speed<span>Verse</span></h1>
-      <p class="tagline">Pace Converter</p>
     </header>
 
+    <!-- Tab Bar -->
+    <nav class="tab-bar" role="tablist">
+      <button class="tab-btn active" id="tab-converter" role="tab" aria-selected="true" aria-controls="panel-converter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/>
+        </svg>
+        換算
+      </button>
+      <button class="tab-btn" id="tab-race" role="tab" aria-selected="false" aria-controls="panel-race">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tab-icon">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        配速計算
+      </button>
+    </nav>
+
     <main class="main">
-      <!-- Pace Input -->
-      <div class="input-group">
-        <label class="input-label">Pace</label>
-        <div class="input-wrapper pace-wrapper">
-          <input 
-            type="number" 
-            id="pace-min" 
-            class="input-field pace-field" 
-            placeholder="6"
-            min="0"
-            max="59"
-            inputmode="numeric"
-          >
-          <span class="pace-separator">:</span>
-          <input 
-            type="number" 
-            id="pace-sec" 
-            class="input-field pace-field" 
-            placeholder="00"
-            min="0"
-            max="59"
-            inputmode="numeric"
-          >
-          <button class="unit-select-btn" id="pace-unit-btn" data-type="pace">
-            <span id="pace-unit">min/km</span>
-            <svg class="unit-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 4.5L6 7.5L9 4.5"/>
-            </svg>
-          </button>
-        </div>
-      </div>
 
-      <!-- Divider with Convert -->
-      <div class="convert-section">
-        <div class="divider"></div>
-        <div class="action-buttons">
-          <button class="convert-btn" id="convert-btn">
-            <svg class="convert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/>
-            </svg>
-            Convert
-          </button>
-          <button class="clear-btn" id="clear-btn">
-            <svg class="clear-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
-            Clear
-          </button>
-        </div>
-        <div class="divider"></div>
-      </div>
+      <!-- ===== Panel 1: Pace / Speed Converter ===== -->
+      <section class="panel active" id="panel-converter" role="tabpanel" aria-labelledby="tab-converter">
 
-      <!-- Speed Input -->
-      <div class="input-group">
-        <label class="input-label">Speed</label>
-        <div class="input-wrapper">
-          <input 
-            type="number" 
-            id="speed-input" 
-            class="input-field" 
-            placeholder="10.0"
-            step="0.1"
-            min="0"
-            max="50"
-            inputmode="decimal"
-          >
-          <button class="unit-select-btn" id="speed-unit-btn" data-type="speed">
-            <span id="speed-unit">km/h</span>
-            <svg class="unit-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 4.5L6 7.5L9 4.5"/>
-            </svg>
-          </button>
+        <!-- Pace Input -->
+        <div class="input-group">
+          <label class="input-label">配速 Pace</label>
+          <div class="input-wrapper pace-wrapper">
+            <input
+              type="number"
+              id="pace-min"
+              class="input-field pace-field"
+              placeholder="6"
+              min="0"
+              max="99"
+              inputmode="numeric"
+              aria-label="分鐘"
+            >
+            <span class="pace-separator">:</span>
+            <input
+              type="number"
+              id="pace-sec"
+              class="input-field pace-field"
+              placeholder="00"
+              min="0"
+              max="59"
+              inputmode="numeric"
+              aria-label="秒"
+            >
+            <button class="unit-select-btn" id="pace-unit-btn" data-type="pace" aria-label="切換配速單位">
+              <span id="pace-unit">min/km</span>
+              <svg class="unit-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 4.5L6 7.5L9 4.5"/>
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
 
-      <!-- Result Display -->
-      <div class="result-display" id="result-display">
-        <p class="result-text">Enter speed or pace and click convert</p>
-      </div>
+        <!-- Divider with Convert -->
+        <div class="convert-section">
+          <div class="divider"></div>
+          <div class="action-buttons">
+            <button class="convert-btn" id="convert-btn">
+              <svg class="convert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/>
+              </svg>
+              換算
+            </button>
+            <button class="clear-btn" id="clear-btn">
+              <svg class="clear-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+              清除
+            </button>
+          </div>
+          <div class="divider"></div>
+        </div>
+
+        <!-- Speed Input -->
+        <div class="input-group">
+          <label class="input-label">速度 Speed</label>
+          <div class="input-wrapper">
+            <input
+              type="number"
+              id="speed-input"
+              class="input-field"
+              placeholder="10.0"
+              step="0.1"
+              min="0"
+              max="50"
+              inputmode="decimal"
+              aria-label="速度數值"
+            >
+            <button class="unit-select-btn" id="speed-unit-btn" data-type="speed" aria-label="切換速度單位">
+              <span id="speed-unit">km/h</span>
+              <svg class="unit-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 4.5L6 7.5L9 4.5"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Display -->
+        <div class="result-display" id="result-display">
+          <p class="result-text">輸入配速或速度後按換算</p>
+        </div>
+
+      </section>
+
+      <!-- ===== Panel 2: Race Pace Calculator ===== -->
+      <section class="panel" id="panel-race" role="tabpanel" aria-labelledby="tab-race" hidden>
+
+        <!-- Distance Input -->
+        <div class="input-group">
+          <label class="input-label">距離 Distance</label>
+          <div class="input-wrapper">
+            <input
+              type="number"
+              id="race-distance"
+              class="input-field"
+              placeholder="42.195"
+              step="0.001"
+              min="0"
+              inputmode="decimal"
+              aria-label="距離"
+            >
+            <button class="unit-select-btn" id="race-dist-unit-btn" aria-label="切換距離單位">
+              <span id="race-dist-unit">km</span>
+              <svg class="unit-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 4.5L6 7.5L9 4.5"/>
+              </svg>
+            </button>
+          </div>
+          <!-- Quick-pick distances -->
+          <div class="quick-picks">
+            <button class="quick-btn" data-km="5">5K</button>
+            <button class="quick-btn" data-km="10">10K</button>
+            <button class="quick-btn" data-km="21.0975">半馬</button>
+            <button class="quick-btn" data-km="42.195">全馬</button>
+          </div>
+        </div>
+
+        <!-- Total Time Input -->
+        <div class="input-group">
+          <label class="input-label">完賽時間 Finish Time</label>
+          <div class="input-wrapper time-wrapper">
+            <div class="time-field-group">
+              <input
+                type="number"
+                id="race-hr"
+                class="input-field time-field"
+                placeholder="3"
+                min="0"
+                max="99"
+                inputmode="numeric"
+                aria-label="小時"
+              >
+              <span class="time-label">hr</span>
+            </div>
+            <span class="pace-separator time-colon">:</span>
+            <div class="time-field-group">
+              <input
+                type="number"
+                id="race-min"
+                class="input-field time-field"
+                placeholder="30"
+                min="0"
+                max="59"
+                inputmode="numeric"
+                aria-label="分鐘"
+              >
+              <span class="time-label">min</span>
+            </div>
+            <span class="pace-separator time-colon">:</span>
+            <div class="time-field-group">
+              <input
+                type="number"
+                id="race-sec"
+                class="input-field time-field"
+                placeholder="00"
+                min="0"
+                max="59"
+                inputmode="numeric"
+                aria-label="秒"
+              >
+              <span class="time-label">sec</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculate / Clear -->
+        <div class="convert-section">
+          <div class="divider"></div>
+          <div class="action-buttons">
+            <button class="convert-btn" id="race-calc-btn">
+              <svg class="convert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              計算
+            </button>
+            <button class="clear-btn" id="race-clear-btn">
+              <svg class="clear-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+              清除
+            </button>
+          </div>
+          <div class="divider"></div>
+        </div>
+
+        <!-- Race Result -->
+        <div class="result-display race-result-display" id="race-result-display">
+          <p class="result-text">輸入距離與完賽時間後計算均速</p>
+        </div>
+
+      </section>
+
     </main>
 
     <footer class="footer">
@@ -115,4 +250,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
