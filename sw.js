@@ -1,4 +1,4 @@
-const CACHE_NAME = 'speedverse-v6';
+const CACHE_NAME = 'speedverse-v7';
 const BASE_PATH = self.location.pathname.replace(/sw\.js$/, '');
 const BASE_URL = `${self.location.origin}${BASE_PATH}`;
 const ASSET_PATHS = [
@@ -7,8 +7,8 @@ const ASSET_PATHS = [
   './style.css',
   './app.js',
   './manifest.v2.json',
-  './icons/icon-v2-192.png',
-  './icons/icon-v2-512.png'
+  './icons/icon-v3-192.png',
+  './icons/icon-v3-512.png'
 ];
 const PRECACHE_URLS = ASSET_PATHS.map((path) => new URL(path, BASE_URL).href);
 const OFFLINE_URL = new URL('./index.html', BASE_URL).href;
